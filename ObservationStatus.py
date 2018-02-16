@@ -3,8 +3,8 @@ from astropy.io import fits
 import scipy as sp
 import matplotlib.pyplot as plt
 #from pyspherematch import *
-from pydl.pydlutils import yanny
-from pydl.pydlutils.spheregroup import *
+from pydl.pydl.pydlutils import yanny
+from pydl.pydl.pydlutils.spheregroup import *
 import os
 from astropy.time import Time
 
@@ -57,9 +57,11 @@ ra2,dec2=np.loadtxt('boss_survey_outline_points_sorted_ra-60_300_SGC.txt').T
 
 #For SDSS-IV USe the following file containing 2958 sources
 baltargets = yanny.read_table_yanny(filename='green01-TDSS_FES_VARBALmaster1.par.txt',tablename='TARGET')
+newtargets=yanny.read_table_yanny('targeting13-explained_more_TDSS_FES_VARBAL_201605.dat',tablename='TARGET')
 print len(baltargets)
 print baltargets['ra'],baltargets['dec']
-
+baltargetsra = np.concatenate((baltargets['ra'],newtargets['ra']))
+baltargetsdec = np.concatenate((baltargets['dec'],newtargets['dec']))
 
 
 spAllfile = 'spAll-v5_10_7.fits'
@@ -72,10 +74,10 @@ tolerance_deg = tolerance_arcsec/3600.
 #eb = np.where(spAll['MJD'] >= 56890)[0]
 #print len(spAll),len(eb)
 eboss = spAll
-index1,index2,dist = spherematch(baltargets['ra'],baltargets['dec'],eboss['RA'],eboss['DEC'],tolerance_deg,maxmatch=0)
+index1,index2,dist = spherematch(baltargetsra,baltargetsdec,eboss['RA'],eboss['DEC'],tolerance_deg,maxmatch=0)
 out=open('spherematch_results_all_tol_1.5.txt','w')
 for i in range(len(index1)):
-    print>>out, '{0:10.5f}\t{1:10.5f}\t{2:10.5f}\t{3:10.5f}\t{4}\t{5}'.format(baltargets['ra'][index1[i]],eboss['RA'][index2[i]],baltargets['dec'][index1[i]],eboss['DEC'][index2[i]],eboss['MJD'][index2[i]],eboss['PLATE'][index2[i]])
+    print>>out, '{0:10.5f}\t{1:10.5f}\t{2:10.5f}\t{3:10.5f}\t{4}\t{5}'.format(baltargetsra[index1[i]],eboss['RA'][index2[i]],baltargetsdec[index1[i]],eboss['DEC'][index2[i]],eboss['MJD'][index2[i]],eboss['PLATE'][index2[i]])
 #
 print len(index1)
 out.close()
@@ -95,6 +97,16 @@ for k in range(len(radec)):
     else:
         pass
 
+ura = [];udec=[]
+n_epochs=[]
+for j in range(len(newlist)):
+    mra=newlist[j][0];mdec=newlist[j][1]
+    ep =  np.where((pra == mra) & (pdec == mdec))[0]
+    n_epochs.append(len(ep))
+    ura.append(mra);udec.append(mdec)
+
+n_epochs =np.array(n_epochs)
+ura =np.array(ura);udec=np.array(udec)
 
 print len(oldlist),len(newlist),len(un_mjd)
 n_bins = 100
@@ -120,15 +132,15 @@ for label in (ax.get_xticklabels() + ax.get_yticklabels()):
 
 #fig1,ax1=plt.subplots(figsize=(15, 8))
 init_plotting()
-x1 = np.where(unq_cnt == 1)[0]
-x2 = np.where(unq_cnt >= 2)[0]
+x1 = np.where(n_epochs == 1)[0]
+x2 = np.where(n_epochs >= 2)[0]
 ax1.plot(ra1,dec1,'-',color='black',alpha=0.5)
 ax1.plot(ra2,dec2,'-',color='black',alpha=0.5)
 ax1.set_xlim(-55,300)
 ax1.set_ylim(-15,100)
-ax1.plot(negativeRAs(baltargets['ra']),baltargets['dec'],'.',markersize=3,color='black',label='Parent Sample'+'(#'+str(len(baltargets))+')')
-ax1.plot(negativeRAs(pra[x1]),pdec[x1],'o',color='red',markersize=3,label='1 epoch'+'(#'+str(len(x1))+')')
-ax1.plot(negativeRAs(pra[x2]),pdec[x2],'s',color='blue',markersize=3,label='2 or more epochs'+'(#'+str(len(x2))+')')
+ax1.plot(negativeRAs(baltargetsra),baltargetsdec,'.',markersize=3,color='black',label='Parent Sample'+'(#'+str(len(baltargetsra))+')')
+ax1.plot(negativeRAs(ura[x1]),udec[x1],'o',color='red',markersize=3,label='1 epoch'+'(#'+str(len(x1))+')')
+ax1.plot(negativeRAs(ura[x2]),udec[x2],'s',color='blue',markersize=3,label='2 or more epochs'+'(#'+str(len(x2))+')')
 ax1.set_xlabel(r'RA',fontsize=20)
 ax1.set_ylabel(r'DEC',fontsize=20)
 ax1.set_title('Targets on Sky')

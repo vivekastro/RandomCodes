@@ -60,7 +60,12 @@ ra2,dec2=np.loadtxt('boss_survey_outline_points_sorted_ra-60_300_SGC.txt').T
 #For SDSS-IV USe the following file containing 2958 sources
 baltargets = yanny.read_table_yanny(filename='green01-TDSS_FES_VARBALmaster1.par.txt',tablename='TARGET')
 #print len(baltargets)
-
+newtargets=yanny.read_table_yanny('targeting13-explained_more_TDSS_FES_VARBAL_201605.dat',tablename='TARGET')
+print len(baltargets)
+print baltargets['ra'],baltargets['dec']
+baltargetsra = np.concatenate((baltargets['ra'],newtargets['ra']))
+baltargetsdec = np.concatenate((baltargets['dec'],newtargets['dec']))
+print len(baltargetsra)
 spAllfile = 'spAll-v5_10_7.fits'
 #
 data = fits.open('spAll-v5_10_0.fits')[1].data
@@ -135,7 +140,7 @@ ax1.plot(ra1,dec1,'-',color='black',alpha=0.5)
 ax1.plot(ra2,dec2,'-',color='black',alpha=0.5)
 ax1.set_xlim(-55,300)
 ax1.set_ylim(-15,100)
-ax1.plot(negativeRAs(baltargets['ra']),baltargets['dec'],'.',markersize=3,color='black',label='Parent Sample'+'(#'+str(len(baltargets))+')')
+ax1.plot(negativeRAs(baltargetsra),baltargetsdec,'.',markersize=3,color='black',label='Parent Sample'+'(#'+str(len(baltargetsra)-12)+')')
 #ax1.plot(negativeRAs(sequelsbals['RA']),sequelsbals['DEC'],'o',color='green',markersize=3)
 ax1.plot(negativeRAs(ura[x1]),udec[x1],'o',color='red',markersize=3,label='1 epoch'+'(#'+str(len(x1))+')')
 
