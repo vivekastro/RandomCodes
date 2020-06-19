@@ -2,7 +2,7 @@ import numpy as np
 import os
 import urllib2
 
-df = np.genfromtxt('targets_with3epochs.txt',names=['ra','dec','z','pmf1','pmf2','pmf3'],dtype=(float,float,float,'|S15','|S15','|S15'))
+df = np.genfromtxt('targets_with3epochs_dr14_spherematch.txt',names=['ra','dec','z','pmf1','pmf2','pmf3'],dtype=(float,float,float,'|S15','|S15','|S15'))
 print df
 
 def download_spectra(plate, mjd, fiber, dirname='.'):

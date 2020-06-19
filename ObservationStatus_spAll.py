@@ -3,8 +3,8 @@ from astropy.io import fits
 import scipy as sp
 import matplotlib.pyplot as plt
 #from pyspherematch import *
-from pydl.pydlutils import yanny
-from pydl.pydlutils.spheregroup import *
+from pydl.pydl.pydlutils import yanny
+from pydl.pydl.pydlutils.spheregroup import *
 import os
 from astropy.time import Time
 
@@ -66,9 +66,9 @@ print baltargets['ra'],baltargets['dec']
 baltargetsra = np.concatenate((baltargets['ra'],newtargets['ra']))
 baltargetsdec = np.concatenate((baltargets['dec'],newtargets['dec']))
 print len(baltargetsra)
-spAllfile = 'spAll-v5_10_7.fits'
+spAllfile = 'spAll-v5_11_0.fits'
 #
-data = fits.open('spAll-v5_10_0.fits')[1].data
+data = fits.open('spAll-v5_10_10.fits')[1].data
 
 spAll = fits.open(spAllfile)[1].data
 
@@ -159,7 +159,7 @@ for label1 in (ax1.get_xticklabels() + ax1.get_yticklabels()):
     label1.set_fontsize(13)
 
 fig.tight_layout()
-fig.savefig('SDSSIV_BALQSO_Observation_status_v5_10_7_spAll_sequels_sky.jpeg')
-plt.show()
+fig.savefig('SDSSIV_BALQSO_Observation_status_v5_11_0_spAll_sequels_sky.jpeg')
+#plt.show()
 
 

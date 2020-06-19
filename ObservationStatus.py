@@ -64,7 +64,7 @@ baltargetsra = np.concatenate((baltargets['ra'],newtargets['ra']))
 baltargetsdec = np.concatenate((baltargets['dec'],newtargets['dec']))
 
 
-spAllfile = 'spAll-v5_10_7.fits'
+spAllfile = 'spAll-v5_10_10.fits'
 
 spAll = fits.open(spAllfile)[1].data
 
@@ -75,14 +75,14 @@ tolerance_deg = tolerance_arcsec/3600.
 #print len(spAll),len(eb)
 eboss = spAll
 index1,index2,dist = spherematch(baltargetsra,baltargetsdec,eboss['RA'],eboss['DEC'],tolerance_deg,maxmatch=0)
-out=open('spherematch_results_all_tol_1.5.txt','w')
+out=open('spherematch_results_all_tol_1.5_v5_10_10.txt','w')
 for i in range(len(index1)):
     print>>out, '{0:10.5f}\t{1:10.5f}\t{2:10.5f}\t{3:10.5f}\t{4}\t{5}'.format(baltargetsra[index1[i]],eboss['RA'][index2[i]],baltargetsdec[index1[i]],eboss['DEC'][index2[i]],eboss['MJD'][index2[i]],eboss['PLATE'][index2[i]])
 #
 print len(index1)
 out.close()
 
-pra,sra,pdec,sdec,mjd,plate=np.loadtxt('spherematch_results_all_tol_1.5.txt').T
+pra,sra,pdec,sdec,mjd,plate=np.loadtxt('spherematch_results_all_tol_1.5_v5_10_10.txt').T
 print mjd
 
 radec = zip(pra,pdec)
@@ -155,6 +155,6 @@ for label1 in (ax1.get_xticklabels() + ax1.get_yticklabels()):
     label1.set_fontsize(13)
 
 fig.tight_layout()
-fig.savefig('SDSSIV_BALQSO_Observation_status_v5_10_7_all_new_tol_1.5_sky.jpeg')
-plt.show()
+fig.savefig('SDSSIV_BALQSO_Observation_status_v5_10_10_all_new_tol_1.5_sky.jpeg')
+#plt.show()
 
